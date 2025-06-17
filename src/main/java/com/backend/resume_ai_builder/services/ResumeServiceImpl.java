@@ -1,6 +1,8 @@
 package com.backend.resume_ai_builder.services;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -80,9 +82,11 @@ public class ResumeServiceImpl  implements ResumeService{
 		}
 	}
 	String loadPromptFromFile(String filename) throws IOException {
-	        Path path = new ClassPathResource(filename).getFile().toPath();
-	        return Files.readString(path);
+	    ClassPathResource resource = new ClassPathResource(filename);
+	    try (InputStream inputStream = resource.getInputStream()) {
+	        return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 	    }
+	}
 	 
 	 String putValuesToTemplate( String template, Map<String,String> values) {
 		 for(Map.Entry<String, String> entry : values.entrySet()) {
